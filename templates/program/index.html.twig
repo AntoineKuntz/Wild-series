@@ -1,0 +1,6 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+    <h1>{{ website }} Index</h1>
+<form action="{{ path('program_show', {id:4 }) }}" method="get">
+<button type="submit" class="btn btn-outline-dark">Programme 4</button>
+{% endblock %}
