@@ -16,7 +16,7 @@
   
     <h5>Titre : {{ episodes.title }}</h5>
     <p>Synopsis : {{ episodes.synopsis }}</p>
-  
+      <a href="{{ path("program_episode_show", { program: program.id, season: season.id, episodes: episode.id }) }}">Voir l'épisode</a>
     {% endfor %}  
 <a href="{{ path('program_index') }}">
     Retour à la liste des programmes
