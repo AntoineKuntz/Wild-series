@@ -15,58 +15,67 @@ use App\Entity\Episode;
      */
 class ProgramController extends AbstractController
 {
-    /**
+      /**
+     * Show all rows from Program’s entity
+     *
      * @Route("/", name="index")
+     * @return Response A response instance
      */
     public function index(): Response
     {
-        $programs = $this->getDoctrine()->getRepository(Program::class)->findAll();
+        $programs = $this->getDoctrine()
+            ->getRepository(Program::class)
+            ->findAll();
 
-
-    return $this->render('program/index.html.twig',['programs' => $programs]);
+        return $this->render(
+            'program/index.html.twig',
+            ['programs' => $programs]
+        );
     }
 
     /**
-     * @Route("/{id}", requirements={"id"="\d+"}, methods={"GET"}, name="show")
-     */
-    public function show(int $id):Response
-
-{
-
-    $program = $this->getDoctrine()->getRepository(Program::class)->findOneBy(['id' => $id]);
-
-        $seasons = $this->getDoctrine()->getRepository(Season::class)->findBy(['program' => $program]);
-
-    if (!$program) {
-
-        throw $this->createNotFoundException('No program with id : '.$id.' found in program\'s table.');
-
-    }
-
-    return $this->render('program/show.html.twig', ['program' => $program,'seasons' => $seasons]);
-}
-
-
-    /**
-     * @Route("/{programId}/seasons/{seasonId}",methods={"GET"}, name="seasonShow")
-     */
-public function showSeason( $programId, $seasonId)
+     * Getting a program by id
+     * 
+     * @return Response
+     * @Route("/show/{id}", name="show")
+    */
+    public function show(Program $program) : Response
     {
-        $program = $this->getDoctrine()->getRepository(Program::class)->findOneBy(['id' => $programId]);
 
-        $seasons = $program->getSeason();
-
-        $season = $this->getDoctrine()->getRepository(Season::class)->findOneBy(['id' => $seasonId]);
-
-        /*$episodes = $season->getEpisodes(); */
-
-        $episode = $this->getDoctrine()->getRepository(Episode::class)->findBy(['season' => $seasonId]);
-
-        
-
+       /* $program = $this->getDoctrine()->getRepository(Program::class)->findOneBy(['id' => $id]);
+        $season = $this->getDoctrine()->getRepository(Season::class)->findBy(['program'=>$id]);
         if (!$program) {
-            throw $this->createNotFoundException('No program with id : ' . $programId . ' found in program\'s table.');
-        }
-        return $this->render('program/season_show.html.twig', ['program' => $program,'season' => $season]);
+            throw $this->createNotFoundException('No program with id : '.$id.' found in program\'s table.');
+        }*/
+
+        return $this->render('program/show.html.twig', ['program' => $program,'seasons' => $program->getSeason()]);
     }
+
+
+
+  /**
+     * Getting a episode by season and program
+     *
+     * @Route("/{programId}/seasons/{seasonId}", name="seasonShow")
+     * @return Response
+     */
+    public function showSeason(Program $programId, Season $seasonId)
+    {
+        $episodes = $seasonId->getEpisodes();
+
+
+        return $this->render('program/season_show.html.twig', ['program' => $programId,'season' => $seasonId,'episodes' => $episodes,]);
+    }
+
+    /**
+     * Getting a episode by season and program
+     *
+     * @Route("/{program}/seasons/{season}/episode/{episode}", name="episode_show")
+     * @return Response
+     */
+    public function showEpisode(Program $program, Season $season, Episode $episode)
+    {
+        return $this->render('program/episode_show.html.twig', ['program' => $program,'season' => $season,'episode' => $episode,]);
+    }
+
 }
