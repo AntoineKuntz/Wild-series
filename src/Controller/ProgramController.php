@@ -9,7 +9,8 @@ use App\Entity\Program;
 use App\Entity\Season;
 use App\Entity\Category;
 use App\Entity\Episode;
-
+use App\Form\ProgramType;
+use Symfony\Component\HttpFoundation\Request;
  /**
      * @Route("/programs/", name="program_")
      */
@@ -31,6 +32,37 @@ class ProgramController extends AbstractController
             'program/index.html.twig',
             ['programs' => $programs]
         );
+    }
+
+
+ /**
+     * The controller for the Program add form
+     * Correspond à la route /Program/new et au name "program_new"
+     * @Route("/new", name="new")
+     */
+    public function new(Request $request) : Response
+    {
+        // Create a new Program Object
+        $program = new Program();
+        // Create the associated Form
+        $form = $this->createForm(ProgramType::class, $program);
+        // Render the form
+        // Get data from HTTP request
+        $form->handleRequest($request);
+        // Was the form submitted ?
+        if ($form->isSubmitted()) {
+            // Deal with the submitted data
+            // For example : persiste & flush the entity
+            // And redirect to a route that display the result
+            $entityManager = $this->getDoctrine()->getManager();
+            // Persist Category Object
+            $entityManager->persist($program);
+            // Flush the persisted object
+            $entityManager->flush();
+            // Finally redirect to categories list
+            return $this->redirectToRoute('category_index');
+        }
+        return $this->render('program/new.html.twig', ["form" => $form->createView(),]);
     }
 
     /**
@@ -70,7 +102,7 @@ class ProgramController extends AbstractController
     /**
      * Getting a episode by season and program
      *
-     * @Route("/{program}/seasons/{season}/episode/{episode}", name="episode_show")
+     * @Route("/{program}/seasons/{season}/episode/{episode}", name="episodeShow")
      * @return Response
      */
     public function showEpisode(Program $program, Season $season, Episode $episode)
