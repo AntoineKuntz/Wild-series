@@ -97,12 +97,12 @@ class Episode
     }
     public function getProgram(): ?Program
     {
-        return $this->program;
+        return $this->Program;
     }
 
     public function setProgram(?Program $program): self
     {
-        $this->program = $program;
+        $this->Program = $program;
 
         return $this;
     }
