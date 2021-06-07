@@ -58,7 +58,7 @@ class Program
     private $Episode;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Actor::class, mappedBy="programs")
+     * @ORM\ManyToMany(targetEntity=Actor::class, mappedBy="programs",cascade={"persist"})
      */
     private $actors;
 
