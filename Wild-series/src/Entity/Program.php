@@ -42,15 +42,10 @@ class Program
     private $poster;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Category::class)
+     * @ORM\ManyToOne(targetEntity=Category::class, inversedBy="programs")
      * @ORM\JoinColumn(nullable=false)
      */
     private $category;
-
-    /**
-     * @ORM\OneToMany(targetEntity=Season::class, mappedBy="program")
-     */
-    private $Season;
 
     /**
      * @ORM\OneToMany(targetEntity=Episode::class, mappedBy="Program", orphanRemoval=true)
@@ -62,9 +57,20 @@ class Program
      */
     private $actors;
 
+
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    
+    private $slug;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Season::class, mappedBy="program")
+     */
+    private $seasons;
+
     public function __construct()
     {
-        $this->Season = new ArrayCollection();
         $this->Episode = new ArrayCollection();
         $this->actors = new ArrayCollection();
     }
@@ -122,36 +128,7 @@ class Program
         return $this;
     }
 
-    /**
-     * @return Collection|Season[]
-     */
-    public function getSeason(): Collection
-    {
-        return $this->Season;
-    }
-
-    public function addSeason(Season $season): self
-    {
-        if (!$this->Season->contains($season)) {
-            $this->Season[] = $season;
-            $season->setProgram($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSeason(Season $season): self
-    {
-        if ($this->Season->removeElement($season)) {
-            // set the owning side to null (unless already changed)
-            if ($season->getProgram() === $this) {
-                $season->setProgram(null);
-            }
-        }
-
-        return $this;
-    }
-
+    
     /**
      * @return Collection|Episode[]
      */
@@ -204,6 +181,48 @@ class Program
     {
         if ($this->actors->removeElement($actor)) {
             $actor->removeProgram($this);
+        }
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): self
+    {
+        $this->slug = $slug;
+
+        return $this;
+    }
+
+      /**
+     * @return Collection|Season[]
+     */
+    public function getSeason(): Collection
+    {
+        return $this->seasons;
+    }
+
+    public function addSeason(Season $season): self
+    {
+        if (!$this->seasons->contains($season)) {
+            $this->seasons[] = $season;
+            $season->setProgram($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSeason(Season $season): self
+    {
+        if ($this->seasons->removeElement($season)) {
+            // set the owning side to null (unless already changed)
+            if ($season->getProgram() === $this) {
+                $season->setProgram(null);
+            }
         }
 
         return $this;

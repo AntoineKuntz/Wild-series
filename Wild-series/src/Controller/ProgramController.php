@@ -2,15 +2,18 @@
 // src/Controller/ProgramController.php
 namespace App\Controller;
 
+
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Entity\Episode;
 use App\Entity\Program;
 use App\Entity\Season;
-use App\Entity\Category;
-use App\Entity\Episode;
+use App\Entity\Actor;
 use App\Form\ProgramType;
-use Symfony\Component\HttpFoundation\Request;
+use App\Service\Slugify;
  /**
      * @Route("/programs", name="program_")
      */
@@ -35,7 +38,7 @@ class ProgramController extends AbstractController
      * Correspond à la route /Program/new et au name "program_new"
      * @Route("/new", name="new")
      */
-    public function new(Request $request) : Response
+    public function new(Request $request, Slugify $slugify) : Response
     {
         // Create a new Program Object
         $program = new Program();
@@ -50,12 +53,16 @@ class ProgramController extends AbstractController
             // For example : persiste & flush the entity
             // And redirect to a route that display the result
             $entityManager = $this->getDoctrine()->getManager();
+
+            $slug = $slugify->generate($program->getTitle());
+            $program->setSlug($slug);
+
             // Persist Category Object
             $entityManager->persist($program);
             // Flush the persisted object
             $entityManager->flush();
             // Finally redirect to categories list
-            return $this->redirectToRoute('category_index');
+            return $this->redirectToRoute('program_index');
         }
         return $this->render('program/new.html.twig', ["form" => $form->createView(),]);
     }
@@ -63,8 +70,8 @@ class ProgramController extends AbstractController
     /**
      * Getting a program by id
      * 
+     * @Route("/{slug}", name="show")
      * @return Response
-     * @Route("/show/{id}", name="show")
     */
     public function show(Program $program) : Response
     {
@@ -80,7 +87,7 @@ class ProgramController extends AbstractController
 
 
 
-  /**
+   /**
      * Getting a episode by season and program
      *
      * @Route("/{programId}/seasons/{seasonId}", name="seasonShow")
@@ -97,12 +104,13 @@ class ProgramController extends AbstractController
     /**
      * Getting a episode by season and program
      *
-     * @Route("/{program}/seasons/{season}/episode/{episode}", name="episodeShow")
+     * @Route("/{program}/seasons/{season}/episode/{slug}", name="episodeShow")
      * @return Response
      */
     public function showEpisode(Program $program, Season $season, Episode $episode)
     {
         return $this->render('program/episode_show.html.twig', ['program' => $program,'season' => $season,'episode' => $episode,]);
     }
+
 
 }

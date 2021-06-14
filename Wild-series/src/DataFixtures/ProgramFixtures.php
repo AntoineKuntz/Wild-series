@@ -6,12 +6,23 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use App\Entity\Program;
+Use App\Service\Slugify;
 
 class ProgramFixtures extends Fixture implements DependentFixtureInterface
 {
+    private $slugify;
+
+    public function __construct(Slugify $slugify)
+    {
+        $this->slugify = $slugify;
+    }
+
+
     public function load(ObjectManager $manager)
     {
         $program = new Program();
+        $slug = $this->slugify->generate('Walking dead');
+        $program->setSlug($slug);
         $program->setTitle('Walking dead');
         $program->setSummary('Des zombies envahissent la terre');
         $program->setCategory($this->getReference('category_0'));
@@ -21,6 +32,8 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         }
     
         $program = new Program();
+        $slug = $this->slugify->generate('Fear The Walking Dead');
+        $program->setSlug($slug);
         $program->setTitle('Fear The Walking Dead');
         $program->setPoster('https://fr.web.img6.acsta.net/pictures/20/09/25/11/43/3207723.jpg');
         $program->setSummary('Des zombies envahissent la terre');
@@ -32,6 +45,8 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
 
 
         $program = new Program();
+        $slug = $this->slugify->generate('My hero academia');
+        $program->setSlug($slug);
         $program->setTitle('My hero academia');
         $program->setPoster('https://image.animedigitalnetwork.fr/license/mha/tv/web/affiche_600x856.jpg');
         $program->setSummary("Dans un monde où 80 % de la population mondiale possède des super-pouvoirs, ici nommés « Alters » (個性, Kosei?), n'importe qui peut devenir un héros ou, s'il le souhaite, un criminel.");
@@ -42,6 +57,8 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
 
 
         $program = new Program();
+        $slug = $this->slugify->generate('Sweeth tooth');
+        $program->setSlug($slug);
         $program->setTitle('Sweeth tooth');
         $program->setPoster('https://images.critictoo.com/wp-content/uploads/2021/05/Sweet-Tooth-Saison-1-Poster.jpg');
         $program->setSummary("Dans un futur post-apocalyptique, les humains ont été décimés par un mystérieux virus, et une nouvelle race d'hybrides croisant l'homme et l'animal a émergé. ");
@@ -51,6 +68,8 @@ class ProgramFixtures extends Fixture implements DependentFixtureInterface
         $this->addReference('program_3', $program);
 
         $program = new Program();
+        $slug = $this->slugify->generate('Xtreme');
+        $program->setSlug($slug);
         $program->setTitle('Xtreme');
         $program->setPoster('https://www.heavenofhorror.com/wp-content/uploads/2021/06/xtreme-netflix-review.jpg');
         $program->setSummary("Deux ans après le meurtre de son fils et de son père, un ex-tueur à gages met à exécution un plan de vengeance finement orchestré contre le meurtrier : son propre frère.");

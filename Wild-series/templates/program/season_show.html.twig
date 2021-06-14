@@ -14,7 +14,7 @@
    <h5> épisode  {{ episodes.number }}</h5>
     <h5>Titre : {{ episodes.title }}</h5>
     <p>Synopsis : {{ episodes.synopsis }}</p>
-      
+      <a href="{{ path("program_episodeShow", { program: program.id, season: season.id, slug: episodes.slug }) }}" class="btn btn-primary">Voir les détails</a>
     {% endfor %}  
    
     Retour à la liste des programmes

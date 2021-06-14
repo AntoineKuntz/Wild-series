@@ -34,15 +34,14 @@ class Season
     private $description;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Program::class, inversedBy="Season")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $program;
-
-    /**
      * @ORM\OneToMany(targetEntity=Episode::class, mappedBy="season")
      */
     private $episodes;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Program::class, inversedBy="seasons")
+     */
+    private $program;
 
     public function __construct()
     {
@@ -90,17 +89,6 @@ class Season
         return $this;
     }
 
-    public function getProgram(): ?Program
-    {
-        return $this->program;
-    }
-
-    public function setProgram(?Program $program): self
-    {
-        $this->program = $program;
-
-        return $this;
-    }
 
     /**
      * @return Collection|Episode[]
@@ -128,6 +116,18 @@ class Season
                 $episode->setSeason(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getProgram(): ?Program
+    {
+        return $this->program;
+    }
+
+    public function setProgram(?Program $program): self
+    {
+        $this->program = $program;
 
         return $this;
     }

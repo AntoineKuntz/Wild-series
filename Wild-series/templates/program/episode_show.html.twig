@@ -12,5 +12,5 @@
                 Résumé :{{ episode.synopsis }}
             </p>
         </div>
-    <a href="{{ path('program_season_show', {program: program.id,  season: season.id}) }}">Retourner à la sélection d'épisodes</a>
+      <a href='{{ path("program_seasonShow", { programId: program.id,  seasonId: season.id }) }}'>Voir la saison</a>
 {% endblock %}
