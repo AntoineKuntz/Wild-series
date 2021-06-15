@@ -3,5 +3,5 @@
 {% block body %}
     <h1 {{ episode.title }}  has been created</h1>
     <p>Hey , the new episode {{ episode.title }} has been created on  the season {{episode.number}} Enjoy wild series</p>
- 
+    <a href="http://127.0.0.1:8000/episode/{{ episodes.slug }}">Show episode</a>
 {% endblock %}
