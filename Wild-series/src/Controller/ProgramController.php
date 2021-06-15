@@ -14,6 +14,8 @@ use App\Entity\Season;
 use App\Entity\Actor;
 use App\Form\ProgramType;
 use App\Service\Slugify;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
  /**
      * @Route("/programs", name="program_")
      */
@@ -38,7 +40,7 @@ class ProgramController extends AbstractController
      * Correspond à la route /Program/new et au name "program_new"
      * @Route("/new", name="new")
      */
-    public function new(Request $request, Slugify $slugify) : Response
+    public function new(Request $request, Slugify $slugify, MailerInterface $mailer ) : Response
     {
         // Create a new Program Object
         $program = new Program();
@@ -61,6 +63,16 @@ class ProgramController extends AbstractController
             $entityManager->persist($program);
             // Flush the persisted object
             $entityManager->flush();
+
+
+            $email = (new Email())
+            ->from('d2e2f78f3408c2@smtp.mailtrap.io')
+            ->to('d2e2f78f3408c2@smtp.mailtrap.io')
+            ->subject('Une nouvelle série vient d\'être publiée !')
+            ->html($this->renderView('program/newProgramEmail.html.twig', ['program' => $program]));
+
+            $mailer->send($email);
+
             // Finally redirect to categories list
             return $this->redirectToRoute('program_index');
         }

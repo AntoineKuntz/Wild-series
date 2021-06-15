@@ -10,6 +10,8 @@ use App\Entity\Episode;
 use App\Form\EpisodeType;
 use App\Repository\EpisodeRepository;
 use App\Service\Slugify;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 
 /**
  * @Route("/episode")
@@ -41,6 +43,15 @@ class EpisodeController extends AbstractController
             $episode->setSlug($slug);
             $entityManager->persist($episode);
             $entityManager->flush();
+
+
+            $email = (new Email())
+            ->from('d2e2f78f3408c2@smtp.mailtrap.io')
+            ->to('d2e2f78f3408c2@smtp.mailtrap.io')
+            ->subject('Une nouvelle série vient d\'être publiée !')
+            ->html($this->renderView('episode/newEpisodeEmail.html.twig', ['episode' => $episode]));
+            
+            $mailer->send($email);
 
             return $this->redirectToRoute('episode_index');
         }
